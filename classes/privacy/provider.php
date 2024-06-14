@@ -114,7 +114,14 @@ class provider implements   \core_privacy\local\metadata\provider,
      * @param \context $context the context to delete in.
      */
     public static function delete_data_for_all_users_in_context(\context $context) {
-        debugging('The Helixmedia plugin does not currently support the deleting of user data. ', DEBUG_DEVELOPER);
+        global $DB;
+
+        if (!$context instanceof \context_course) {
+            return;
+        }
+
+        $conditions = ['course' => $context->instanceid];
+        $DB->delete_records('helixmedia_mobile', $conditions);
     }
 
     /**
@@ -123,7 +130,18 @@ class provider implements   \core_privacy\local\metadata\provider,
      * @param approved_contextlist $contextlist a list of contexts approved for deletion.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        debugging('The Helixmedia plugin does not currently support the deleting of user data. ', DEBUG_DEVELOPER);
+        global $DB;
+
+        $userid = $contextlist->get_user()->id;
+        
+        if (!$context instanceof \context_course) {
+            return;
+        }
+
+        foreach ($contextlist as $context) {        
+            $conditions = ['userid' => $userid, 'course' => $context->instanceid];
+            $DB->delete_records('helixmedia_mobile', $conditions);
+        }
     }
 
     /**
